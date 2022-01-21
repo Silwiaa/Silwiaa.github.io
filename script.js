@@ -33,7 +33,7 @@ $(document).ready(function() {
     $.ajax({
       url: requestUrl,
       method: 'GET',
-        success: handleDatatableRender
+      success: handleDatatableRender
      });
   }
 
@@ -66,7 +66,7 @@ $(document).ready(function() {
   function handleTaskDeleteRequest() {
     var parentEl = $(this).parent().parent();
     var taskId = parentEl.attr('data-task-id');
-    var requestUrl = apiRoot;
+    var requestUrl = apiRoot + '/';
 
     $.ajax({
       url: requestUrl + $.param({
