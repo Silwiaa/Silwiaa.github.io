@@ -190,9 +190,6 @@ $(document).ready(function() {
             description: relatedTask.content,
             listId: selectedListId
          }),
-         success: function(data) {
-            console.log('Card created - ' + data.shortUrl);
-         }
        });
    }
 
