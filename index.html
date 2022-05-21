@@ -8,66 +8,110 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i&subset=latin-ext" rel="stylesheet">
 </head>
 <body>
-<h1 class="kodilla-heading kodilla-heading--main">Kodilla CRUD App</h1>
+<h1 class="heading heading--main">CRUD App</h1>
 
 <main class="crud container">
   <section class="datatable">
-    <h2>Add a new task</h2>
+    <h2>Add a new campaign</h2>
     <form
         class="datatable__row datatable__row--add"
         method="POST"
-        action="https://kodilla-tasks-sk.herokuapp.com/v1/task/createTask"
+        action="https://campaign-creator-sk.herokuapp.com/api/v1/campaign/createCampaign"
         data-task-add-form
     >
-      <fieldset class="datatable__row-section datatable__row-section--input-section">
+
+    <fieldset class="datatable__row-section datatable__row-section--input-section">
         <label class="datatable__input-label">
-          Task name
+          Campaign name
         </label>
-        <input type="text" name="title" placeholder="Insert a task name" required minlength="3">
+        <input type="text" name="title" placeholder="Insert a campaign name" required minlength="3">
       </fieldset>
 
       <fieldset class="datatable__row-section datatable__row-section--input-section">
         <label class="datatable__input-label">
-          Task content
+          Bid amount
         </label>
-        <textarea name="content" placeholder="Insert task content" required minlength="3"></textarea>
+        <input type="text" name="title" placeholder="Insert a bid amount" required minlength="2">
+      </fieldset>
+
+      <fieldset class="datatable__row-section datatable__row-section--input-section">
+        <label class="datatable__input-label">
+          Campaign fund
+        </label>
+        <textarea name="content" placeholder="Insert campaign fund" required minlength="3"></textarea>
+      </fieldset>
+
+      <fieldset class="datatable__row-section datatable__row-section--trello-section">
+        <select class="datatable__select" name="town-name" data-board-name-select>
+          <option disabled selected>--- select a town ---</option>
+        </select>
+      </fieldset>
+
+      <fieldset class="datatable__row-section datatable__row-section--input-section">
+        <label class="datatable__input-label">
+          Radius
+        </label>
+        <textarea name="content" placeholder="Insert radius" required minlength="1"></textarea>
       </fieldset>
 
       <fieldset class="datatable__row-section datatable__row-section--button-section">
-        <button type="submit" data-task-add-button class="datatable__button">Add a task</button>
+        <button type="submit" data-task-add-button class="datatable__button">Add a campaign</button>
       </fieldset>
     </form>
   </section>
   <section class="datatable">
-    <h2>Tasks from the API</h2>
-    <div class="datatable__tasks-container" data-tasks-container></div>
+    <h2>All campaigns</h2>
+    <div class="datatable__campaigns-container" data-campaigns-container></div>
   </section>
 </main>
 
 <div class="template" data-datatable-row-template>
   <form class="datatable__row" data-task-id="0">
-    <fieldset class="datatable__row-section datatable__row-section--input-section" data-task-name-section>
+
+    <fieldset class="datatable__row-section datatable__row-section--input-section" data-campaign-name-section>
       <label class="datatable__input-label">
-        Task name
+        Campaign name
       </label>
-      <input type="text" name="title" placeholder="Insert a new task name" data-task-name-input required minlength="3">
-      <p class="datatable__field-value" data-task-name-paragraph></p>
+      <input type="text" name="title" placeholder="Insert a new campaign name" data-campaign-name-input required minlength="3">
+      <p class="datatable__field-value" data-campaign-name-paragraph></p>
     </fieldset>
 
-    <fieldset class="datatable__row-section datatable__row-section--input-section" data-task-content-section>
+    <fieldset class="datatable__row-section datatable__row-section--input-section" data-campaign-content-section>
       <label class="datatable__input-label">
-        Task content
+        Bid Amount
       </label>
-      <textarea name="title" placeholder="Insert new task content" data-task-content-input required minlength="3"></textarea>
-      <p class="datatable__field-value" data-task-content-paragraph></p>
+      <textarea name="title" placeholder="Insert new bid amount" data-campaign-content-input required minlength="2"></textarea>
+      <p class="datatable__field-value" data-campaign-content-paragraph></p>
+    </fieldset>
+
+    <fieldset class="datatable__row-section datatable__row-section--input-section" data-campaign-content-section>
+      <label class="datatable__input-label">
+        Campaign fund
+      </label>
+      <textarea name="title" placeholder="Insert new campaign fund" data-campaign-content-input required minlength="2"></textarea>
+      <p class="datatable__field-value" data-campaign-content-paragraph></p>
+    </fieldset>
+
+    <fieldset class="datatable__row-section datatable__row-section--trello-section">
+        <select class="datatable__select" name="town-name" data-board-name-select>
+          <option disabled selected>--- select new town ---</option>
+        </select>
+    </fieldset>
+
+    <fieldset class="datatable__row-section datatable__row-section--input-section" data-campaign-content-section>
+      <label class="datatable__input-label">
+        Radius
+      </label>
+      <textarea name="title" placeholder="Insert new radus" data-campaign-content-input required minlength="1"></textarea>
+      <p class="datatable__field-value" data-campaign-content-paragraph></p>
     </fieldset>
 
     <div class="datatable__row-section-wrapper">
       <fieldset class="datatable__row-section datatable__row-section--button-section">
-        <button type="button" data-task-submit-update-button class="datatable__button datatable__button--editing ">Submit update</button>
-        <button type="button" data-task-edit-abort-button class="datatable__button datatable__button--editing">Abort update</button>
-        <button type="button" data-task-edit-button class="datatable__button">Edit</button>
-        <button type="button" data-task-delete-button class="datatable__button">Delete</button>
+        <button type="button" data-campaign-submit-update-button class="datatable__button datatable__button--editing ">Submit update</button>
+        <button type="button" data-campaign-edit-abort-button class="datatable__button datatable__button--editing">Abort update</button>
+        <button type="button" data-campaign-edit-button class="datatable__button">Edit</button>
+        <button type="button" data-campaign-delete-button class="datatable__button">Delete</button>
       </fieldset>
 
       <fieldset class="datatable__row-section datatable__row-section--trello-section">
@@ -78,7 +122,7 @@
           <option disabled selected>--- select a list ---</option>
         </select>
         <button type="button" data-trello-card-creation-trigger class="datatable__button datatable__button--card-creation">
-          Create a card
+          Create a campaign
         </button>
       </fieldset>
     </div>

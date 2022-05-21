@@ -1,8 +1,7 @@
 $(document).ready(function() {
-   const apiRoot = 'https://kodilla-tasks-sk.herokuapp.com/v1/';
-   const trelloApiRoot = 'https://kodilla-tasks-sk.herokuapp.com/v1/trello/';
+   const apiRoot = 'http://localhost:8080/crud/api/v1/campaign/';
    const datatableRowTemplate = $('[data-datatable-row-template]').children()[0];
-   const $tasksContainer = $('[data-tasks-container]');
+   const $tasksContainer = $('[data-campaigns-container]');
 
    var availableBoards = {};
    var availableTasks = {};
@@ -11,26 +10,15 @@ $(document).ready(function() {
 
    getAllTasks();
 
-   function getAllAvailableBoards(callback, callbackArgs) {
-      var requestUrl = trelloApiRoot + 'boards';
-
-      $.ajax({
-         url: requestUrl,
-         method: 'GET',
-         contentType: 'application/json',
-         success: function(boards) { callback(callbackArgs, boards); }
-     });
-   }
-
    function createElement(data) {
       const element = $(datatableRowTemplate).clone();
 
-      element.attr('data-task-id', data.id);
-      element.find('[data-task-name-section] [data-task-name-paragraph]').text(data.title);
-      element.find('[data-task-name-section] [data-task-name-input]').val(data.title);
+      element.attr('data-campaign-id', data.id);
+      element.find('[data-campaign-name-section] [data-campaign-name-paragraph]').text(data.title);
+      element.find('[data-campaign-name-section] [data-campaign-name-input]').val(data.title);
 
-      element.find('[data-task-content-section] [data-task-content-paragraph]').text(data.content);
-      element.find('[data-task-content-section] [data-task-content-input]').val(data.content);
+      element.find('[data-campaign-content-section] [data-campaign-content-paragraph]').text(data.content);
+      element.find('[data-campaign-content-section] [data-campaign-content-input]').val(data.content);
 
       return element;
    }
@@ -44,47 +32,47 @@ $(document).ready(function() {
      });
    }
 
-   function handleDatatableRender(taskData, boards) {
-      $tasksContainer.empty();
+   function handleDatatableRender(campaignData, boards) {
+      $campaignsContainer.empty();
       boards.forEach(board => {
          availableBoards[board.id] = board;
       });
 
-     taskData.forEach(function(task) {
-        var $datatableRowEl = createElement(task);
-        var $availableBoardsOptionElements = prepareBoardOrListSelectOptions(boards);
+     campaignData.forEach(function(campaign) {
+        var $datatableRowEl = createElement(campaign);
+        var $availableBoardsOptionElements = prepareBoardOrListSelectOptions(campaigns);
 
-        $datatableRowEl.find('[data-board-name-select]')
+        $datatableRowEl.find('[data-campaign-name-select]')
            .append($availableBoardsOptionElements);
 
         $datatableRowEl
-          .appendTo($tasksContainer);
+          .appendTo($campaignsContainer);
      });
    }
 
    function getAllTasks() {
-      const requestUrl = apiRoot + 'tasks';
+      const requestUrl = apiRoot + 'getCampaigns';
 
       $.ajax({
          url: requestUrl,
          method: 'GET',
          contentType: "application/json",
-         success: function(tasks) {
-            tasks.forEach(task => {
-               availableTasks[task.id] = task;
+         success: function(campaigns) {
+            tasks.forEach(campaign => {
+               availableTasks[task.id] = campaign;
             });
 
-         getAllAvailableBoards(handleDatatableRender, tasks);
+         getAllAvailableBoards(handleDatatableRender, campaigns);
          }
       });
    }
 
    function handleTaskUpdateRequest() {
-      var parentEl = $(this).parents('[data-task-id]');
-      var taskId = parentEl.attr('data-task-id');
-      var taskTitle = parentEl.find('[data-task-name-input]').val();
-      var taskContent = parentEl.find('[data-task-content-input]').val();
-      var requestUrl = apiRoot + 'tasks';
+      var parentEl = $(this).parents('[data-campaign-id]');
+      var taskId = parentEl.attr('data-campaign-id');
+      var taskTitle = parentEl.find('[data-campaign-name-input]').val();
+      var taskContent = parentEl.find('[data-campaign-content-input]').val();
+      var requestUrl = apiRoot + 'updateCampaign';
 
       $.ajax({
          url: requestUrl,
@@ -93,25 +81,27 @@ $(document).ready(function() {
          contentType: "application/json; charset=utf-8",
          dataType: 'json',
          data: JSON.stringify({
-           id: taskId,
-           title: taskTitle,
-           content: taskContent
+           campaignId: campaignId,
+           name: name,
+           bidAmount: bidAmount
          }),
          success: function(data) {
-            parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
-            parentEl.find('[data-task-name-paragraph]').text(taskTitle);
-            parentEl.find('[data-task-content-paragraph]').text(taskContent);
+            parentEl.attr('data-campaign-id', data.id).toggleClass('datatable__row--editing');
+            parentEl.find('[data-campaign-name-paragraph]').text(name);
+            parentEl.find('[data-campaign-content-paragraph]').text(bidAmount);
          }
       });
    }
 
    function handleTaskDeleteRequest() {
-      var parentEl = $(this).parents('[data-task-id]');
-      var taskId = parentEl.attr('data-task-id');
-      var requestUrl = apiRoot + 'tasks';
+      var parentEl = $(this).parents('[data-campaign-id]');
+      var taskId = parentEl.attr('data-campaign-id');
+      var requestUrl = apiRoot + 'deleteCampaign';
 
       $.ajax({
-         url: requestUrl + '/' + taskId,
+         url: requestUrl + '/?' + $.param({
+            campaignId: campaignId
+         }),
          method: 'DELETE',
          success: function() {
             parentEl.slideUp(400, function() { parentEl.remove(); });
@@ -122,10 +112,9 @@ $(document).ready(function() {
    function handleTaskSubmitRequest(event) {
       event.preventDefault();
 
-      var taskTitle = $(this).find('[name="title"]').val();
-      var taskContent = $(this).find('[name="content"]').val();
-
-      var requestUrl = apiRoot + 'tasks';
+      var campaignName = $(this).find('[name="title"]').val();
+     
+      var requestUrl = apiRoot + 'createCampaign';
 
       $.ajax({
          url: requestUrl,
@@ -134,8 +123,7 @@ $(document).ready(function() {
          contentType: "application/json; charset=utf-8",
          dataType: 'json',
          data: JSON.stringify({
-            title: taskTitle,
-            content: taskContent
+            name: campaignName,
          }),
         complete: function(data) {
            if (data.status === 200) {
@@ -146,14 +134,14 @@ $(document).ready(function() {
    }
 
    function toggleEditingState() {
-      var parentEl = $(this).parents('[data-task-id]');
+      var parentEl = $(this).parents('[data-campaign-id]');
       parentEl.toggleClass('datatable__row--editing');
 
-      var taskTitle = parentEl.find('[data-task-name-paragraph]').text();
-      var taskContent = parentEl.find('[data-task-content-paragraph]').text();
+      var taskTitle = parentEl.find('[data-campaign-name-paragraph]').text();
+      var taskContent = parentEl.find('[data-campaign-content-paragraph]').text();
 
-      parentEl.find('[data-task-name-input]').val(taskTitle);
-      parentEl.find('[data-task-content-input]').val(taskContent);
+      parentEl.find('[data-campaign-name-input]').val(taskTitle);
+      parentEl.find('[data-campaign-content-input]').val(taskContent);
    }
 
    function handleBoardNameSelect(event) {
@@ -166,9 +154,9 @@ $(document).ready(function() {
    }
 
    function handleCardCreationRequest(event) {
-      var requestUrl = trelloApiRoot + 'cards';
-      var $relatedTaskRow = $(event.target).parents('[data-task-id]');
-      var relatedTaskId = $relatedTaskRow.attr('data-task-id');
+      var requestUrl = trelloApiRoot + 'createCampaign';
+      var $relatedTaskRow = $(event.target).parents('[data-campaign-id]');
+      var relatedTaskId = $relatedTaskRow.attr('data-campaign-id');
       var relatedTask = availableTasks[relatedTaskId];
       var selectedListId = $relatedTaskRow.find('[data-list-name-select]').val();
 
@@ -188,15 +176,19 @@ $(document).ready(function() {
             description: relatedTask.content,
             listId: selectedListId
          }),
+         success: function(data) {
+            console.log('Card created - ' + data.shortUrl);
+            alert('Card created - ' + data.shortUrl);
+         }
        });
    }
 
-   $('[data-task-add-form]').on('submit', handleTaskSubmitRequest);
+   $('[data-campaign-add-form]').on('submit', handleTaskSubmitRequest);
 
    $tasksContainer.on('change','[data-board-name-select]', handleBoardNameSelect);
    $tasksContainer.on('click','[data-trello-card-creation-trigger]', handleCardCreationRequest);
-   $tasksContainer.on('click','[data-task-edit-button]', toggleEditingState);
-   $tasksContainer.on('click','[data-task-edit-abort-button]', toggleEditingState);
-   $tasksContainer.on('click','[data-task-submit-update-button]', handleTaskUpdateRequest);
-   $tasksContainer.on('click','[data-task-delete-button]', handleTaskDeleteRequest);
+   $tasksContainer.on('click','[data-campaign-edit-button]', toggleEditingState);
+   $tasksContainer.on('click','[data-campaign-edit-abort-button]', toggleEditingState);
+   $tasksContainer.on('click','[data-campaign-submit-update-button]', handleTaskUpdateRequest);
+   $tasksContainer.on('click','[data-campaign-delete-button]', handleTaskDeleteRequest);
 });

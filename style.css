@@ -44,7 +44,7 @@ body {
    .container {
     width: 1170px; } }
 
-.kodilla-heading--main {
+.heading--main {
    margin: 20px auto;
    text-align: center;
    font-size: 30px;
@@ -148,11 +148,11 @@ body {
    display: block;
    margin-bottom: 10px; }
 
-.datatable__tasks-container:empty {
+.datatable__containers-container:empty {
    position: relative; }
 
-.datatable__tasks-container:empty::after {
-   content: 'Currently, there are no tasks available.'; }
+.datatable__containers-container:empty::after {
+   content: 'Currently, there are no containers available.'; }
 
 .template {
    display: none; }
